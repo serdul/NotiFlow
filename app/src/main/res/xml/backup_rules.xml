@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Exclude encrypted preferences (contains API keys) -->
+    <exclude domain="sharedpref" path="notiflow_secure_prefs.xml" />
+    <!-- Exclude database (user data stays on-device) -->
+    <exclude domain="database" path="notiflow_db" />
+</full-backup-content>
