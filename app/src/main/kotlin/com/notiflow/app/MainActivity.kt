@@ -17,13 +17,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.notiflow.app.domain.model.ThemePreference
-import com.notiflow.app.presentation.navigation.AppNavGraph
-import com.notiflow.app.presentation.theme.NotiFlowTheme
-import com.notiflow.app.presentation.screens.pin.PinLockScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,12 +49,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val showPinLock by viewModel.showPinLock.collectAsStateWithLifecycle()
-
-            NotiFlowTheme(darkTheme = when (uiState.themePreference) {
+            val darkTheme = when (uiState.themePreference) {
                 ThemePreference.DARK -> true
                 ThemePreference.LIGHT -> false
-                else -> isSystemInDarkTheme()
-            }) {
+                ThemePreference.SYSTEM -> isSystemInDarkTheme()
+            }
+
+            MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
                 if (showPinLock) {
                     PinLockScreen(onPinVerified = { viewModel.onPinVerified() })
                 } else {
@@ -60,9 +69,40 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         viewModel.onAppResumed()
     }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onAppBackgrounded()
+    }
 }
 
 @Composable
-fun isSystemInDarkTheme(): Boolean {
-    return androidx.compose.foundation.isSystemInDarkTheme()
+private fun PinLockScreen(onPinVerified: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "App Locked", style = MaterialTheme.typography.headlineSmall)
+        Button(onClick = onPinVerified) {
+            Text("Unlock")
+        }
+    }
+}
+
+@Composable
+private fun AppNavGraph(onboardingCompleted: Boolean) {
+    val message = if (onboardingCompleted) "NotiFlow Home" else "Welcome to NotiFlow"
+    PlaceholderScreen(message)
+}
+
+@Composable
+private fun PlaceholderScreen(message: String) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = message, style = MaterialTheme.typography.headlineSmall)
+    }
 }
