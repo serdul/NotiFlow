@@ -37,7 +37,7 @@ class OpenAiClient @Inject constructor(
     private val baseUrl = "https://api.openai.com/v1/"
 
     private val retrofit by lazy {
-        val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+        val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.NONE }
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)
             .connectTimeout(30, TimeUnit.SECONDS)
