@@ -2,6 +2,9 @@ package com.notiflow.app.service
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.notiflow.app.data.local.database.NotiFlowDatabase
@@ -22,6 +25,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class NotificationBatchWorker @AssistedInject constructor(
@@ -109,13 +113,19 @@ class NotificationBatchWorker @AssistedInject constructor(
                 if (dueMs != null) {
                     val reminderTime = dueMs - ((settings?.defaultReminderMinutes ?: 5) * 60_000L)
                     if (reminderTime > now) {
-                        database.reminderDao().insert(
+                        val reminderId = database.reminderDao().insert(
                             ReminderEntity(
                                 taskId = taskId,
                                 triggerTime = reminderTime,
                                 minutesBefore = settings?.defaultReminderMinutes ?: 5
                             )
                         )
+                        val delayMs = reminderTime - now
+                        val reminderRequest = OneTimeWorkRequestBuilder<ReminderWorker>()
+                            .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)
+                            .setInputData(workDataOf("reminderId" to reminderId))
+                            .build()
+                        WorkManager.getInstance(applicationContext).enqueue(reminderRequest)
                     }
                 }
             }
