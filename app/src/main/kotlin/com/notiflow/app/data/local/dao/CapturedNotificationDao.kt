@@ -18,6 +18,9 @@ interface CapturedNotificationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(notification: CapturedNotificationEntity): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(notifications: List<CapturedNotificationEntity>): List<Long>
+
     @Query("UPDATE captured_notifications SET processingStatus = :status, batchId = :batchId WHERE id = :id")
     suspend fun updateStatus(id: Long, status: String, batchId: String? = null)
 

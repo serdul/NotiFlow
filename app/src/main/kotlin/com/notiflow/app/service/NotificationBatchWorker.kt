@@ -79,7 +79,7 @@ class NotificationBatchWorker @AssistedInject constructor(
             // Save tasks
             for (extractedTask in result.tasks) {
                 val dueMs = extractedTask.dueDate?.let { parseDate(it, zoneId) }
-                val dueTimeMs = extractedTask.dueTime?.let { parseTime(it) }
+                val dueTimeMs = extractedTask.dueTime?.let { timeStr -> try { java.time.LocalTime.parse(timeStr, java.time.format.DateTimeFormatter.ISO_LOCAL_TIME).toSecondOfDay() * 1000L } catch (e: Exception) { null } }
 
                 val categoryId = extractedTask.categoryName?.let { catName ->
                     categoriesList.find { it.name.equals(catName, ignoreCase = true) }?.id

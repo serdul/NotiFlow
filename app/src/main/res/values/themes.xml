@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.NotiFlow" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.NotiFlow" parent="Theme.AppCompat.Light.NoActionBar" />
     <style name="Theme.NotiFlow.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
