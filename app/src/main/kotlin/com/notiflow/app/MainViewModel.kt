@@ -56,6 +56,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun onAppBackgrounded() {
+        lastBackgroundTime = System.currentTimeMillis()
+    }
+
     fun onPinVerified() {
         _showPinLock.value = false
         lastBackgroundTime = 0L

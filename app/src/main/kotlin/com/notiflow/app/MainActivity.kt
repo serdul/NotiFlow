@@ -72,7 +72,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun PinLockScreen(onPinVerified: () -> Unit) {
     PlaceholderScreen("App Locked")
-    onPinVerified()
 }
 
 @Composable
