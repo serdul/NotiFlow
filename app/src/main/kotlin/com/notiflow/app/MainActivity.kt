@@ -16,11 +16,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,14 +49,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             val showPinLock by viewModel.showPinLock.collectAsStateWithLifecycle()
+            val darkTheme = when (uiState.themePreference) {
+                ThemePreference.DARK -> true
+                ThemePreference.LIGHT -> false
+                ThemePreference.SYSTEM -> isSystemInDarkTheme()
+            }
 
-            when (uiState.themePreference) {
-                ThemePreference.DARK, ThemePreference.LIGHT, ThemePreference.SYSTEM -> {
-                    if (showPinLock) {
-                        PinLockScreen(onPinVerified = { viewModel.onPinVerified() })
-                    } else {
-                        AppNavGraph(onboardingCompleted = uiState.onboardingCompleted)
-                    }
+            MaterialTheme(colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()) {
+                if (showPinLock) {
+                    PinLockScreen(onPinVerified = { viewModel.onPinVerified() })
+                } else {
+                    AppNavGraph(onboardingCompleted = uiState.onboardingCompleted)
                 }
             }
         }
@@ -71,7 +78,16 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun PinLockScreen(onPinVerified: () -> Unit) {
-    PlaceholderScreen("App Locked")
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "App Locked", style = MaterialTheme.typography.headlineSmall)
+        Button(onClick = onPinVerified) {
+            Text("Unlock")
+        }
+    }
 }
 
 @Composable
