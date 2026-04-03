@@ -37,7 +37,7 @@ class GeminiClient @Inject constructor(
     private val baseUrl = "https://generativelanguage.googleapis.com/v1beta/"
 
     private val retrofit by lazy {
-        val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+        val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.NONE }
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)
             .connectTimeout(30, TimeUnit.SECONDS)
