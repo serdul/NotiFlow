@@ -26,7 +26,7 @@ class ReminderWorker @AssistedInject constructor(
         return try {
             val reminder = database.reminderDao().getById(reminderId)
                 ?: return Result.failure()
-            val task = database.taskDao().getById(reminder.taskId)
+            val task = reminder.taskId?.let { database.taskDao().getById(it) }
 
             showReminderNotification(task?.title ?: "Task Reminder")
             database.reminderDao().update(reminder.copy(isDelivered = true))

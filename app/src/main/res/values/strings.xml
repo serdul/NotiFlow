@@ -18,7 +18,7 @@
     <string name="ignored">Ignored</string>
     <string name="complete_with_voice">Complete with Voice</string>
     <string name="create_task_manually">Create Task Manually</string>
-    <string name="voice_record_hint">What's on your mind?</string>
+    <string name="voice_record_hint">What\'s on your mind?</string>
     <string name="processing">Processing…</string>
     <string name="task_updated">Task updated ✓</string>
     <string name="confirm_and_process">Confirm &amp; Process</string>

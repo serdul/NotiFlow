@@ -120,10 +120,9 @@ class NotificationCaptureService : NotificationListenerService() {
         Timber.d("Processing batch $batchId with ${batch.size} notifications")
 
         val dao = database.capturedNotificationDao()
-        batch.forEach { entity ->
-            val id = dao.insert(entity.copy(batchId = batchId, processingStatus = "PENDING"))
-            Timber.d("Saved notification id=$id to batch $batchId")
-        }
+        val entitiesToInsert = batch.map { it.copy(batchId = batchId, processingStatus = "PENDING") }
+        val ids = dao.insertAll(entitiesToInsert)
+        Timber.d("Saved notifications ids=$ids to batch $batchId")
 
         val workRequest = OneTimeWorkRequestBuilder<NotificationBatchWorker>()
             .setInputData(workDataOf("batchId" to batchId))
