@@ -1,8 +1,6 @@
 package com.notiflow.app.data.remote.ai
 
 import com.google.gson.annotations.SerializedName
-import com.notiflow.app.domain.model.CapturedNotification
-import com.notiflow.app.domain.model.Category
 
 // ─── User Context ────────────────────────────────────────────────────────────
 data class UserContext(
